@@ -6,7 +6,7 @@ import UploadDoc from "../img/uploadDoc.png";
 import UploadImage from "../img/image1.png";
 import Doc from "../img/docs.png";
 import Messages from "./Messages";
-import Input from "./Input";
+import Input from "./Input/Input";
 import { ChatContext } from "../context/ChatContext";
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth'
@@ -22,18 +22,24 @@ import { useNavigate, Link } from 'react-router-dom';
 const Chat = () => {
   const { data } = useContext(ChatContext);
   const navigate = useNavigate();
-  const [docUrl,setDocUrl] = useState(null);
+  const [docUrl,setDocUrl] = useState(null); 
   const [docUpload,SetDocUpload] = useState(true);
   const { currentUser } = useContext(AuthContext);
   const [mode,setMode] = useState(-1);
   const [select,setSelection]= useState(false);
   const [doc,setDoc] = useState(null);
+  const [selectedValue, setSelectedValue] = useState('');
+  
+  const handleChange = event => {
+      setSelectedValue(event.target.value);
+      console.log(event.target.value);
+  };
 
 
   const cancelSendDoc = ()=>{
-      SetDocUpload(true);
-      setDocUrl(null);
-      setDoc(null);
+      SetDocUpload(true); //to check whether pop up the upload screen
+      setDocUrl(null);    //create url for document
+      setDoc(null);       //create file for document
   }
 
   const updateSelection = ()=>{
@@ -78,12 +84,17 @@ const Chat = () => {
         {/* <span>{data.user?.displayName}</span> */}
         <span className='sidebarName'>Legal Chatbot</span>
         </div>
+        <select value={selectedValue} onChange={handleChange}>
+        <option value="0">General QA</option>
+        <option value="1">Contract QA</option>
+        </select> 
         <button className='logOutButton' onClick={()=>{signOut(auth);navigate("/");}}>log out</button>   
         {/* <div className="chatIcons">
           <img src={Cam} alt="" />
           <img src={Add} alt="" />
           <img src={More} alt="" />
         </div> */}
+        
       </div>
       {(docUpload)?<Messages />:
       <div  className='imageContainer'>
@@ -106,7 +117,7 @@ const Chat = () => {
         <img className='docImage' src={Doc} alt=''></img>
       </div>
       </div>} */}
-      <Input selectButton={()=>updateSelection()} docUpload={docUpload} mode={mode} file={doc} sendDoc={()=>SetDocUpload(true)}/>
+      <Input selectButton={()=>updateSelection()} chatResponseMode={selectedValue} docUpload={docUpload} mode={mode} file={doc} sendDoc={()=>SetDocUpload(true)}/>
     </div>
   );
 };

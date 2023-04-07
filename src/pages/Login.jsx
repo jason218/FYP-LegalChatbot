@@ -1,11 +1,13 @@
-import React, {useState,useContext} from 'react';
+import React, {useState,useContext,useEffect} from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {  signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../firebase';
 import { AuthContext } from "../context/AuthContext";
 import { ChatContext } from "../context/ChatContext";
+import axios from 'axios';
 
 //import Add from "../img/addAvatar.png"
+
 
 const Login = () => {   
   const [login,setLoginErr] = useState(false);
@@ -13,36 +15,27 @@ const Login = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
-  
 
-
- 
-
- 
-  
-  const handleSubmit =  async (e) =>{
-    e.preventDefault() 
     
-      const email = e.target[0].value    
-      const password = e.target[1].value;   
+  const handleSubmit =  async (e) =>{
+    
+
+      const email = e.target[0].value
+      const password = e.target[1].value;
       console.log(email);
-      console.log(password);  
-   
+      console.log(password);
+
 
 try{
-
-    await signInWithEmailAndPassword(auth, email, password);
-    dispatch({ type: "CHANGE_USER", payload: currentUser.uid });
-
-    
-
+    e.preventDefault() 
+    const user = await signInWithEmailAndPassword(auth, email, password); //promise so need assign a variable to it so it will await
+    dispatch({ type: "CHANGE_USER", payload: user.uid });
     navigate("/home")
         }catch(err){
-          console.log('error');
+          console.log(err);
            setPwErr(true);
            setLoginErr(true);
         }
-
     
 
   }

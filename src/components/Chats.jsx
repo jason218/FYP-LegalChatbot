@@ -29,8 +29,7 @@ const Chats = () => {
     setInit(false);
   };
 
-  console.log('heo fro 3');
-  console.log(userList);
+
 
   {(init)&&getData()}
 
@@ -63,8 +62,6 @@ const Chats = () => {
       <p>User List</p>
       </div>
       {userList.map((chat) => {
-        console.log('asdads');
-        console.log(chat);
           return <div
           className="userChat"
           onClick={() => dispatch({ type: "CHANGE_USER", payload:chat.user.uid })}
