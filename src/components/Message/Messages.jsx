@@ -1,27 +1,31 @@
-import { doc, onSnapshot,  Timestamp} from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
-import { ChatContext } from "../context/ChatContext";
-import { db } from "../firebase";
-import Message from "./Message";
-import { AuthContext } from "../context/AuthContext";
+import { doc, onSnapshot} from "firebase/firestore";
+import React, { useContext, useEffect, useState,useRef } from "react";
+import { ChatContext } from "../../context/ChatContext";
+import { db } from "../../firebase";
+import MessageContent from "./MessageContent";
+import { AuthContext } from "../../context/AuthContext";
+import { Button } from "@mui/material";
 
 
-
-const Messages = () => {
+const Messages = (props) => {
   const [messages, setMessages] = useState([]);
   const [photoURL,setPhotoURL] = useState();
-  const [startDate,setStartDate] = useState(null)
   const { data } = useContext(ChatContext);
   const { currentUser } = useContext(AuthContext);
+
   let today = new Date();
   let currentDay = new Date(today.getFullYear(),today.getMonth(),today.getDate());
   let tomorrow = new Date(currentDay.getFullYear(),currentDay.getMonth(),currentDay.getDate()+1);
   let checkDay = new Date();
   let display = false;
   let initial = false;
-  let displayCheck = false;
   const dayArray = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }
 
   const displayDate = (m,firstMessageDisplay) => {
     let messageDay = m.date.toDate(); // m date
@@ -60,31 +64,30 @@ const Messages = () => {
 
 
   useEffect(() => {
-    console.log(data);
-    const unSub = onSnapshot(doc(db, "chats", data.chatId), (doc) => {
+    console.log(data)
+    const unSub = onSnapshot(doc(db, "ChatroomList", data.chatId), (doc) => {
       if(doc.exists()) {
         setMessages(doc.data().messages);
-        // setStartDate(new Date(messages[0].date.toDate().getFullYear(),messages[0].date.toDate().getMonth(),messages[0].date.toDate().getDate()+1));
       }
     });
 
-    const user = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
+    const user = onSnapshot(doc(db, "UserList", currentUser.uid), (doc) => {
       if(doc.exists()) {
         setPhotoURL(doc.data().photoURL);
-        // setStartDate(new Date(messages[0].date.toDate().getFullYear(),messages[0].date.toDate().getMonth(),messages[0].date.toDate().getDate()+1));
       }
-      console.log(photoURL);
+  
     });
-
+    scrollToBottom();
     return () => {
       unSub();
       user();
     };
-  }, [data.chatId,photoURL]);
+  }, []);
 
   //console.log(messages)
-
+  
   return (
+    
     <div className="messages">
 
       {messages.map((m) => {
@@ -95,15 +98,35 @@ const Messages = () => {
         } else {
           result = displayDate(m,false);
         }
-        return <div>
+        return <div  key={Math.random()} >
           {result.toDisplay&&<div id={m.id} className='dayContainer'>
           <p id={m.id} className='day'>{result.displayText}</p>
           </div>}
-          <Message message={m} photo={photoURL} key={m.id} />
+          <MessageContent message={m} photo={photoURL} key={m.id} />
+
         </div>
+
       }
       )}
+
+
+
+      {
+       props.chatResponseMode == "1" ? null:
+     ( props.topQuestions.length==0 ? null: 
+       <div className="question-list">
+       <Button onClick={(e)=>{props.updateInput(props.topQuestions[0]);props.updateTopQuestion([])}} className="trending-button1">{props.topQuestions[0]}</Button>
+       <Button onClick={(e)=>{props.updateInput(props.topQuestions[1]);props.updateTopQuestion([])}}  className="trending-button1">{props.topQuestions[1]}</Button>
+       <Button onClick={(e)=>{props.updateInput(props.topQuestions[2]);props.updateTopQuestion([])}}  className="trending-button1">{props.topQuestions[2]}</Button>
+       <Button onClick={(e)=>{props.updateInput(props.topQuestions[3]);props.updateTopQuestion([])}}  className="trending-button1">{props.topQuestions[3]}</Button>
+       <Button onClick={(e)=>{props.updateInput(props.topQuestions[4]);props.updateTopQuestion([])}}  className="trending-button1">{props.topQuestions[4]}</Button>
+       </div> )
+
+
+       }
+      {<div ref={messagesEndRef} />}
     </div>
+
   );
 };
 

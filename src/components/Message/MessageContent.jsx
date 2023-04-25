@@ -1,14 +1,11 @@
 import React,{useContext} from 'react';
-import {
-  Timestamp
-} from "firebase/firestore";
-import { AuthContext } from "../context/AuthContext";
-import Default from "../img/default.jpg"
+import { AuthContext } from "../../context/AuthContext";
+import Default from "../../images/default.jpg"
 
 const Message = (props) => {
   const { currentUser } = useContext(AuthContext);
-  const defaultId = 'sJvSTb8gYdXDmH4BNv5udRzcDKt2';
-  
+  const defaultId = 'cSoQu0MDxLXA3qidA5NB87cLMFc2';
+
 
   return (
     <div className={(currentUser.uid==props.message.senderId)?'message owners':'message'}>
@@ -26,7 +23,7 @@ const Message = (props) => {
         </div>
         </div>
       </div>
-      
+
     </div>
   )
 }
