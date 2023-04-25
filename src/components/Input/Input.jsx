@@ -17,7 +17,6 @@ const Input = (props) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
   const [contractString, setContractString] = useState("");
-  const [contractUploaded, setContractUploaded] = useState(false);
   const chatbotID = "cSoQu0MDxLXA3qidA5NB87cLMFc2";
 
   useEffect(()=>{
@@ -64,7 +63,6 @@ const Input = (props) => {
         setInputText("");
         sendMessage(currentUser.uid,docURL,inputText);
         sendMessage(chatbotID,null,"I am processing your contract. Please wait for a while.");
-        setContractUploaded(true); 
         const contractResult = await InputAPIHelper.extractContract(docURL,props.file.name);
         console.log(contractResult);
         setContractString(contractResult);

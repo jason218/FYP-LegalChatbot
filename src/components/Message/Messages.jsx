@@ -21,12 +21,12 @@ const Messages = (props) => {
   let initial = false;
   const dayArray = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-  const messagesEndRef = useRef(null);
+  const scrollRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-  }
-
+  useEffect(() => {
+    // Scroll to the bottom of the element whenever it is updated
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  });
   const displayDate = (m,firstMessageDisplay) => {
     let messageDay = m.date.toDate(); // m date
         var displayDay;
@@ -77,19 +77,18 @@ const Messages = (props) => {
       }
   
     });
-    scrollToBottom();
     return () => {
       unSub();
       user();
     };
-  }, []);
+  }, [data,photoURL]);
 
   //console.log(messages)
   
   return (
     
-    <div className="messages">
-
+    <div ref={scrollRef} className="messages">
+      <div>
       {messages.map((m) => {
         var result;
         if (!initial) {
@@ -124,7 +123,7 @@ const Messages = (props) => {
 
 
        }
-      {<div ref={messagesEndRef} />}
+      </div>
     </div>
 
   );

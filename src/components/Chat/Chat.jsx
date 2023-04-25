@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import UploadDoc from "../../images/uploadDoc.png";
 import UploadImage from "../../images/uploadImage.png";
 import Doc from "../../images/docs.png";
@@ -22,6 +22,7 @@ const Chat = () => {
   const [topQuestions, setTopQuestions] = useState([]);
   const [inputTopQuestion,setInputTopQuestion] = useState("");
 
+  
 
   
   const handleChange = event => {
@@ -38,6 +39,11 @@ const Chat = () => {
 
   const updateSelection = ()=>{
     setSelection(!select);
+  }
+
+  const returnChatScreen = () => {
+      SetDocUpload(true);
+      
   }
 
   const fileReader = (mode) => {
@@ -95,7 +101,7 @@ const Chat = () => {
       <img className='upload' src={UploadDoc} alt="" onClick={()=>fileReader(1)} />
       <img className='upload' src={UploadImage} alt="" onClick={()=>fileReader(0)}/>
       </div>}
-      <Input questionMode={selectedValue} inputQuestion={inputTopQuestion} updateInputQuestion={(e)=>{setInputTopQuestion(e)}}  update={(e)=>{setTopQuestions(e)}}  selectButton={()=>updateSelection()} chatResponseMode={selectedValue} docUpload={docUpload} mode={mode} file={doc} sendDoc={()=>SetDocUpload(true)}/>
+      <Input questionMode={selectedValue} inputQuestion={inputTopQuestion} updateInputQuestion={(e)=>{setInputTopQuestion(e)}}  update={(e)=>{setTopQuestions(e)}}  selectButton={()=>updateSelection()} chatResponseMode={selectedValue} docUpload={docUpload} mode={mode} file={doc} sendDoc={()=>returnChatScreen()}/>
     </div>
   );
 };
