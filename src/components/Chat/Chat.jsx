@@ -52,7 +52,7 @@ const Chat = () => {
     if (mode == 0) {
       input.accept = '.png';
     } else {
-      input.accept = '.txt,application/*';
+      input.accept = '.txt,.docx,.pdf';
     }
     setMode(mode);
     let file;
