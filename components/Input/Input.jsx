@@ -1,20 +1,14 @@
-import React, { useContext, useState } from "react";
-import Send from "../../img/send.png";
-import Attach from "../../img/attach.png";
+import React, { useContext, useState, useEffect } from "react";
+import Send from "../../images/send.png";
+import Attach from "../../images/attach.png";
 import InputHelper from "./InputHelper";
 import InputAPIHelper from "./InputAPIHelper";
 import { AuthContext } from "../../context/AuthContext";
 import { ChatContext } from "../../context/ChatContext";
 import {
-  arrayUnion,
-  doc,
-  serverTimestamp,
   Timestamp,
-  updateDoc,
 } from "firebase/firestore";
-import { db, storage } from "../../firebase";
 import { v4 as uuid } from "uuid";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 // Create new plugin instance
 
 
@@ -23,10 +17,21 @@ const Input = (props) => {
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
   const [contractString, setContractString] = useState("");
-  const [contractUploaded, setContractUploaded] = useState(false);
+  const chatbotID = "cSoQu0MDxLXA3qidA5NB87cLMFc2";
+
+  useEffect(()=>{
+
+    if (props.inputQuestion!="") {
+      setInputText(props.inputQuestion);
+      props.updateInputQuestion("");
+    }
+    
+  },[props])
 
 
   const sendMessage = async (userID,docURL,content) => {
+    console.log(userID);
+    console.log(data.chatId);
     const message = {
       id: uuid(),
       text: content,
@@ -36,13 +41,15 @@ const Input = (props) => {
       docType: (props.file!=undefined)&&((props.mode == 0) ? 'image' : 'doc'),
       fileName: (props.file!=undefined)&&props.file.name
     };
+    console.log(data.chatId);
     InputHelper.updateDoc(message,data.chatId);
   }  
 
   const sendTopQuestions = async (content) => {   
     props.update(content);
     //InputHelper.updateDoc(message,data.chatId);
-  }  
+  }
+
 
   const handleContractQA = async () => {
     //switch to chat screen
@@ -55,19 +62,22 @@ const Input = (props) => {
         const userInput = inputText;
         setInputText("");
         sendMessage(currentUser.uid,docURL,inputText);
-        setContractUploaded(true);
-        const contractResult = await InputAPIHelper.extractContract(docURL);
+        sendMessage(chatbotID,null,"I am processing your contract. Please wait for a while.");
+        const contractResult = await InputAPIHelper.extractContract(docURL,props.file.name);
+        console.log(contractResult);
         setContractString(contractResult);
-        // if no input => no response received by bot
         if (inputText != "") {
           const chatResponse = await InputAPIHelper.chatbotResponse(userInput,contractString);
-          sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,chatResponse);
+          sendMessage(chatbotID,null,chatResponse);
+        } else {
+          sendMessage(chatbotID,null,"What can I help you with?");
         } 
+        
       } catch (error) {
         console.log(error);
       }
     }
-  
+
   else {
     //do nth without no input
     if (inputText != "") {
@@ -75,27 +85,17 @@ const Input = (props) => {
       sendMessage(currentUser.uid,null,inputText);
       setInputText("");
       if (contractString=="") {
-        if (contractUploaded) {
-          sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,"I am still processing your contract. Please wait for a while."); //take time load
-        } else {
-          sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,"Please upload the contract."); //no contract
-        }
+        sendMessage(chatbotID,null,"Could you please upload your contract?\nSo, I can solve your contract issues."); 
       } else {
         //answer based on contract
+        console.log(contractString);
+        console.log(userInput);
         const chatResponse = await InputAPIHelper.chatbotResponse(userInput,contractString);
-        sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,chatResponse);
+        sendMessage(chatbotID,null,chatResponse);
       }
     }
+    console.log(contractString);
   }
-    //update last message of users
-      if (inputText != "") {
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          ["lastMessage"]: {
-            text:inputText
-          },
-          ["date"]: serverTimestamp(),
-        });
-      }
   }
 
   const handleGeneralQA = async () => {
@@ -103,37 +103,24 @@ const Input = (props) => {
     //props.sendDoc();                             
     //handle contract
 
-  
+    
     //do nth without no input  
     if (inputText != "") {
 
       const userInput = inputText;
       sendMessage(currentUser.uid,null,inputText);
       setInputText("");  
-      
+
       const chatResponse = await InputAPIHelper.generalQAResponse(userInput); //generalQAResponse
-      sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,chatResponse.answer);
+      sendMessage(chatbotID,null,chatResponse.answer);
       //sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,chatResponse.top_n_questions[0]);
       //sendMessage("sJvSTb8gYdXDmH4BNv5udRzcDKt2",null,"Hello<br>Bye");//"•  "+"Hello\n•  "+"Hello"
-
-
       sendTopQuestions(chatResponse.top_n_questions);
-      console.log("Hello\nBye")
     }
-  
-    //update last message of users
-      if (inputText != "") {
-        await updateDoc(doc(db, "userChats", currentUser.uid), {
-          ["lastMessage"]: {
-            text:inputText
-          },
-          ["date"]: serverTimestamp(),
-        });
-      }
   }
 
 
-  
+
   const handleSend = async () => {
 
     switch (props.chatResponseMode) {
@@ -152,7 +139,7 @@ const Input = (props) => {
   };
   return (
     <div className="input">
-      <img className='upload' src={Attach} alt="" onClick={()=>props.selectButton()}/>
+      {(props.questionMode==1)&&<img className='upload' src={Attach} alt="" onClick={()=>props.selectButton()}/>}
       <input
         type="text"
         placeholder=""

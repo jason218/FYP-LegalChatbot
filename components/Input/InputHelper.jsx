@@ -1,19 +1,17 @@
 import {
   arrayUnion,
   doc,
-  serverTimestamp,
-  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import { db, storage } from "../../firebase";
-import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 class InputHeler {
-      
+
       static updateDoc = async (message,chatID) => {
-        await updateDoc(doc(db, "chats", chatID), {
+        await updateDoc(doc(db, "ChatroomList", chatID), {
             messages: arrayUnion(message),
           });
+          console.log(chatID);
       }
        static uploadDoc = async (currentUser,props) => {
         try {
@@ -51,7 +49,6 @@ class InputHeler {
           return null;
         }
       };
-      
+
 }
 export default InputHeler;
-
