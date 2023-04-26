@@ -1,44 +1,55 @@
-.formContainer{
-    background-color: lightpink; 
+
+body{
+    margin: 0px;
+    overflow: hidden;
+}   
+.loginSignupBackground{
+    //background-color: linear-gradient(#e66465, #9198e5);
+    background: linear-gradient(to right,#2E3192, #1BFFFF);
     height: 100vh;
     display: flex;
+    flex-direction: column;
      align-items: center;
      justify-content: center;
-     .formWrapper{   
-        background-color: white;
+     margin:0px;
+     padding: 0px;
+     border: 0px;
+     border-collapse: collapse;
+     .bigTitle{
+        color: #5d5b8d; 
+        font-weight: bold; 
+        font-size: 50px;
+        margin-bottom: 10px;
+     } 
+     .loginSignupForm{    
+        //background-color: white;   
+        background-color: rgba(255, 255, 255,0.5);
+        border: 3px solid #5d5b8d;
         padding: 20px 60px;
         border-radius: 10px;
-        gap: 10px; 
+        gap: 10px;    
         display: flex; 
         flex-direction: column; 
          align-items: center;
          //justify-content:end;   
 
-         .logo{
-            color: #5d5b8d; 
-            font-weight: bold; 
-            font-size: 24px;
-         } 
-
          .title{
             color:  #5d5b8d;
-            font-size: 12px; 
-
+            font-size: 20px; 
+            margin-bottom: 10px;
          }
         form{ 
-            
-           //background-color: green;
-        //height: 80vh;
         display: flex;
         flex-direction: column; 
      
         
         .input{
-            padding: 10px;
-            //border-bottom: 1px solid #a7bcff;
-            
+            padding: 10px;  
             width: 250px; 
             margin-bottom: 15px;
+            background-color: rgba(255, 255, 255,0.5);;
+            border: 1px solid #5d5b8d;
+
             &::placeholder{
                 color: rgb(175, 175, 175);
             }
@@ -75,7 +86,7 @@
         }
         
         button{
-            background-color:lightpink; 
+            background-color:#FFAE42; 
             border-radius: 50px;
             color: white; 
             padding: 10px; 
@@ -165,26 +176,6 @@
                 }
             }
 
-            .search{
-                border-bottom:  1px solid gray;
-                //background-color: green;   
-                
-                .searchForm{
-
-
-
-                    input{ 
-                        background-color: transparent; 
-                        border: none; 
-                        color: white;   
-                        outline: none; 
-                        padding: 10px;
-                        &::placeholder{color: lightgray;}
-                    }
-                }
-                
-            }
-
             .userList{
                 color: white;  
                 text-align: center;
@@ -227,9 +218,9 @@
         }
 
         .chat{
-            background-color: red;
+            background-color: rgba(173,216,230,1);  ;
             flex: 2; 
-              
+            padding: 0px; margin: 0px;border-collapse: collapse;
             .chatInfo{
                 color: white;
                 background-color: chocolate; 
@@ -252,7 +243,26 @@
                 //         cursor: pointer;
                 //     } 
                 // }
+                .selectComponent{
+                    margin-right: 20px;
+                    background-color: #fff; 
+                    border-radius: 5px;
+                    border: 1px solid #ccc; 
+                    padding: 8px; 
+                    font-size: 12px; 
+                    color: #333; 
+                    outline: none; 
+                    appearance: none; 
+                    &:hover, &:focus {
+                      background-color: #f7f7f7; 
+                    }
+                    option {
+                      background-color: #fff; 
+                      color: #333; 
+                    }
+                }
             }
+          
 
             .imageContainer{
                 height: calc(100% - 140px); 
@@ -354,7 +364,7 @@
             }
           
             .messages{
-                background-color: lightpink;  
+                background-color: rgba(173,216,230,0);  
                 padding: 10px;      
                 height: calc(100% - 160px); 
                 overflow: auto;
@@ -408,7 +418,7 @@
                         
                         .messageText{
                             background-color: white; 
-                            padding: 10px 20px; 
+                            padding: 5px 20px; 
                             border-radius: 0 20px 20px 30px;  
                             max-width: max-content;
 
@@ -455,7 +465,7 @@
             }   
             
             .input{
-                background-color: lightgrey;
+                background-color: rgba(211,211,211,1);//background-color: rgba(255, 255, 255,0.5);
                 height: 50px; 
                 padding: 10px;
                 display: flex;
@@ -472,7 +482,7 @@
                     //background-color: white; 
                     margin-left: 10px;
                     padding: 10px 20px;
-                    border-radius: 30px;
+                    border-radius: 10px;
                     color: #2f2d52;
                     border: none;
                     outline: none; 

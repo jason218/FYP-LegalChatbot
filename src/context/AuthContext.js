@@ -13,13 +13,11 @@ export const AuthContextProvider = ({children}) => {
         });  
         //clean up function
         return () => {
-            console.log('hello3');
             unsub(); 
         }
     }, [currentUser]);
 
     return (
-
         <AuthContext.Provider value = {{currentUser}}>
     {children}
  </AuthContext.Provider>
