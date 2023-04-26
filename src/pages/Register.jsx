@@ -94,6 +94,7 @@ try{
   const selectImage = () => {
       var input = document.createElement('input');
       input.type = 'file';
+      input.accept = 'image/*';
       input.onchange = _ => {
             var file =   input.files[0];
             setFile(file);

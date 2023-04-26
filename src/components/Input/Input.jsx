@@ -85,7 +85,7 @@ const Input = (props) => {
       sendMessage(currentUser.uid,null,inputText);
       setInputText("");
       if (contractString=="") {
-        sendMessage(chatbotID,null,"Please upload the contract."); 
+        sendMessage(chatbotID,null,"Could you please upload your contract?\nSo, I can solve your contract issues."); 
       } else {
         //answer based on contract
         console.log(contractString);
